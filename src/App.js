@@ -3,19 +3,19 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
-import { fade } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import { jsx, css } from '@emotion/core';
 
+import BoardContainer from './BoardContainer';
+
 function App() {
   return (
-    <div css={{
-      flexGrow: 1,
-    }}>
+    <div css={css`
+      flex-grow: 1;
+      height: 100%;
+    `}>
       <AppBar
         position="static"
       >
@@ -61,6 +61,7 @@ function App() {
           </div>
         </Toolbar>
       </AppBar>
+      <BoardContainer />
     </div>
   );
 }
