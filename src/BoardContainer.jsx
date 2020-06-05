@@ -1,11 +1,11 @@
 /** @jsx jsx */
 // eslint-disable-next-line
 import React from 'react';
+import { jsx, css } from '@emotion/core';
 
 import BoardCard from './components/BoardCard';
 import BoardColumn from './components/BoardColumn';
-import { jsx, css } from '@emotion/core';
-
+import NewCardForm from './components/NewCardForm';
 
 export default function BoardContainer(props){
   const colNames = [
@@ -14,7 +14,13 @@ export default function BoardContainer(props){
     'Done',
   ];
 
-  const BoardColumns = () => colNames.map(colName => <BoardColumn title={colName} />);
+  const BoardColumns = () => colNames.map(
+    (colName, index) => (
+      <BoardColumn key={colName+index} title={colName}>
+        <NewCardForm />
+      </BoardColumn>
+    )
+  );
 
   return(
     <div

@@ -18,8 +18,6 @@ export default function BoardColumn(props){
     >
       <Card
         css={css`
-          /* border: red 1px solid; */
-          height: 100%;
           text-align: center;
           width: 100%;
         `}
