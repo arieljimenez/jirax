@@ -34,22 +34,16 @@ export default function BoardContainer(props){
   };
 
   const getFromLocalStore = (columnName = 'all') => {
-    switch (columnName) {
-      case COLUMNS_KEY_NAMES.TODO:
-        addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}'));
-        break;
-      case COLUMNS_KEY_NAMES.INPROGRESS:
-        addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS) || '{}'));
-        break;
-      case COLUMNS_KEY_NAMES.DONE:
-        addDone(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '{}');
-        break;
-      default:
-        addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}'));
-        addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS)  || '{}'));
-        addDone(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '{}'));
-        break;
-    }
+
+    console.log('== BoardContainer');
+    console.log({
+      neka: JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}')
+    });
+    console.log('BoardContainer == ');
+
+    addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}'));
+    addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS)  || '{}'));
+    addDone(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '{}'));
   }
 
 
@@ -64,13 +58,13 @@ export default function BoardContainer(props){
     {
       title: 'In Progress',
       cards: inprogressItems,
-      handler: (item) => addInprogress(inprogressItems => [...inprogressItems, item]),
+      handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.INPROGRESS, item, addHandler: addInprogress }),
       handleDelete: (cardID) => deleteFromLocalStore({ column: COLUMNS_KEY_NAMES.INPROGRESS, cardID })
     },
     {
       title: 'Done',
       cards: doneItems,
-      handler: (item) => addDone(doneItems => [...doneItems, item]),
+      handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.DONE, item, addHandler: addDone }),
       handleDelete: (cardID) => deleteFromLocalStore({ column: COLUMNS_KEY_NAMES.DONE, cardID })
     }
   ];

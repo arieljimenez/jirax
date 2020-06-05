@@ -9,7 +9,7 @@ export function deleteFromLocalStore (props) {
 };
 
 export function saveInLocalStorage({ column, item }) {
-  let collection = localStorage.getItem(column) || {};
+  let collection = JSON.parse(localStorage.getItem(column) || '{}');
 
   collection = {
     ...collection,
