@@ -1,0 +1,5 @@
+export const COLUMNS_KEY_NAMES = {
+  TODO: 'TODO',
+  INPROGRESS: 'INPROGRESS',
+  DONE: 'DONE'
+};

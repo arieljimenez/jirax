@@ -1,3 +1,7 @@
 export default {
-  margin: '15px'
+  margins: {
+    small: '5px',
+    normal: '15px',
+  },
+  cardWidth: '95%'
 };

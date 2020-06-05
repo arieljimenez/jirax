@@ -8,9 +8,28 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
+import BoardCard from './BoardCard';
+
 
 export default function BoardColumn(props){
-  const { title } = props;
+  const { title, cards, handleDelete } = props;
+
+  const columnCards = Object.entries(cards).map(
+    ([key, card]) => (
+      <BoardCard
+        key={key}
+        cardInfo={card}
+        handleDelete={handleDelete}
+      />
+    )
+  )
+
+  console.log('== BoardColumn');
+  console.log({
+    cards
+  });
+  console.log('BoardColumn == ');
+
 
   return (
     <DndProvider
@@ -33,6 +52,7 @@ export default function BoardColumn(props){
             {title}
             <hr />
           </Typography>
+          {columnCards}
           {props.children}
         </CardContent>
       </Card>

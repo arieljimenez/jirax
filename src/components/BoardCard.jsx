@@ -8,37 +8,52 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { jsx, css } from '@emotion/core';
 
+import theme from '../css/theme';
 
 
 export default function SimpleCard(props) {
-  const {
-    cardTitle = 'Card Title...',
-    cardDesc = 'Card Desc...'
-  } = props;
+  const { cardInfo, handleDelete } = props;
 
   return (
-    <Card
+    <div
+      className="cardContainer"
       css={css`
-        width: 90%;
+        display: -webkit-inline-box;
+        width: 100%;
       `}
     >
-      <CardContent>
-        <Typography
-          variant="h5"
-          component="h2"
+      <Card
+        css={css`
+          margin: 5px 10px;
+          width: ${theme.cardWidth};
+        `}
+      >
+        <CardContent>
+          <Typography
+            variant="h5"
+            component="h2"
+            css={css`
+              text-align: left;
+            `}
+          >
+            {cardInfo.content}
+          </Typography>
+        </CardContent>
+        <CardActions
           css={css`
-            font-size: 1.5em;
+            justify-content: flex-end;
           `}
         >
-          {cardTitle}
-        </Typography>
-        <Typography variant="body2" component="p">
-          {cardDesc}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Neka</Button>
-      </CardActions>
-    </Card>
+          <Button
+            variant='outlined'
+            size="small"
+            color="secondary"
+            onClick={() => handleDelete(cardInfo.id)}
+          >
+            Delete
+          </Button>
+        </CardActions>
+      </Card>
+    </div>
   );
 }

@@ -9,22 +9,19 @@ import { jsx, css } from '@emotion/core';
 import theme from '../css/theme'
 
 export default function NewCardForm(props){
-  const {
-    columnName,
-    handleAdd,
-  } = props;
+  const { handleAdd } = props;
 
-  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [cardError, setCardError] = useState(false);
 
   const handleChange = (event) => {
     // validate/sanitize
-    setTitle(event.target.value);
+    setContent(event.target.value);
   }
 
   // reset the form
-  const handleCancel = () => {
-    setTitle('');
+  const handleReset = () => {
+    setContent('');
     setCardError(false);
   }
 
@@ -34,8 +31,8 @@ export default function NewCardForm(props){
       autoComplete="off"
       css={css`
         & > * {
-          margin: ${theme.margin};
-          width: 95%;
+          margin: ${theme.margins.normal};
+          width: ${theme.cardWidth};
         }
       `}
     >
@@ -43,19 +40,19 @@ export default function NewCardForm(props){
         error={cardError}
         multiline
         rows={2}
-        label="Title"
+        label="Content"
         variant="outlined"
-        value={title}
+        value={content}
         onChange={handleChange}
         helperText={cardError && "Card cant be empty"}
       />
       <div
         css={css`
+          align-items: center;
           display: flex;
           flex-direction: column;
-          align-items: center;
           & > * {
-            margin: ${theme.margin};
+            margin: ${theme.margins.normal};
           }
         `}
       >
@@ -70,13 +67,17 @@ export default function NewCardForm(props){
           >
           <Button
             onClick={() => handleAdd({
-              title,
-              columnName
-            })}
+                content,
+                id: new Date().getTime()
+              })
+            }
+            css={css`
+              margin: ${theme.margins.small};
+            `}
           >
             Add
           </Button>
-          <Button onClick={handleCancel}>Cancel</Button>
+          <Button onClick={handleReset}>Cancel</Button>
         </ButtonGroup>
       </div>
     </form>
