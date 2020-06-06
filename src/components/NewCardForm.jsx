@@ -1,18 +1,36 @@
 /** @jsx jsx */
 // eslint-disable-next-line
 import React, { useState } from 'react';
+import { jsx, css } from '@emotion/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { jsx, css } from '@emotion/core';
+import DialogActions from '@material-ui/core/DialogActions';
+import Chip from '@material-ui/core/Chip';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AddIcon from '@material-ui/icons/Add';
+import InputLabel from '@material-ui/core/InputLabel';
 
-import theme from '../css/theme'
+import theme from '../css/theme';
 
 export default function NewCardForm(props){
-  const { handleAdd } = props;
+  const { addHandler } = props;
 
-  const [content, setContent] = useState('');
   const [cardError, setCardError] = useState(false);
+  const [currentTag, setCurrentTag] = useState('');
+  const [tagsData, setTagsData] = useState([
+    {
+      key: 1, label: 'neka'
+    }
+  ]);
+  const [content, setContent] = useState({
+    title: '',
+    description: '',
+    tags: [],
+    assignee: '',
+    dueDate: new Date(),
+  });
 
   const handleChange = (event) => {
     // validate/sanitize
@@ -25,61 +43,104 @@ export default function NewCardForm(props){
     setCardError(false);
   }
 
+  const handleAddTag = () => {
+    setTagsData([...tagsData, {
+      key: new Date().getTime(),
+      label: currentTag,
+    }]);
+    setCurrentTag('');
+  }
+
+  const handleTagsDelete = (tagToDelete) => {
+    setTagsData((tags) => tags.filter((tag) => tag !== tagToDelete));
+  };
+
+  const TagsComponent = () => (
+    <ul
+      css={css`
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          list-style: none;
+          margin: 0;
+          padding: 15px;
+      `}
+    >
+      {tagsData.map((tag) => (
+          <li key={tag.key}>
+            <Chip
+              size='small'
+              label={tag.label}
+              onDelete={() => handleTagsDelete(tag)}
+              css={css`
+                margin: 15px;
+              `}
+            />
+          </li>
+        )
+      )}
+    </ul>
+  );
+
   return(
     <form
       noValidate
       autoComplete="off"
       css={css`
         & > * {
-          margin: ${theme.margins.normal};
-          width: ${theme.cardWidth};
+          margin: ${theme.margins.normal} 0 0 0;
+          width: 100%;
         }
       `}
     >
       <TextField
         error={cardError}
-        multiline
-        rows={2}
-        label="Content"
-        variant="outlined"
-        value={content}
+        label="Title"
+        value={content.title}
         onChange={handleChange}
         helperText={cardError && "Card cant be empty"}
       />
-      <div
+      <TextField
+        error={cardError}
+        multiline
+        rows={2}
+        label="Description"
+        variant="outlined"
+        value={content.description}
+        onChange={handleChange}
+        helperText={cardError && "Card cant be empty"}
+      />
+      <FormControl fullWidth>
+        <InputLabel htmlFor="outlined-adornment-password">Tags</InputLabel>
+        <Input
+          label="Tags"
+          value={currentTag}
+          onChange={(e) => setCurrentTag(e.target.value)}
+          endAdornment={<AddIcon onClick={handleAddTag} />}
+        />
+      </FormControl>
+      <TagsComponent />
+      <DialogActions
         css={css`
-          align-items: center;
-          display: flex;
-          flex-direction: column;
-          & > * {
-            margin: ${theme.margins.normal};
-          }
+          align-items: flex-end;
         `}
       >
-        <ButtonGroup
-          variant="text"
-          color="primary"
-          aria-label="outlined primary button group"
+        <Button
           css={css`
-            justify-content: flex-end;
-            width: 100%;
+            margin: ${theme.margins.small};
           `}
-          >
-          <Button
-            onClick={() => handleAdd({
-                content,
-                id: new Date().getTime()
-              })
-            }
-            css={css`
-              margin: ${theme.margins.small};
-            `}
-          >
-            Add
-          </Button>
-          <Button onClick={handleReset}>Cancel</Button>
-        </ButtonGroup>
-      </div>
+          onClick={() => addHandler({
+              id: new Date().getTime(),
+              content,
+            })
+          }
+        >
+          Add
+        </Button>
+        <Button onClick={handleReset}>
+          Reset
+        </Button>
+      </DialogActions>
     </form>
   )
 }

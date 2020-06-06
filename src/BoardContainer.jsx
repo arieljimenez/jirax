@@ -2,9 +2,11 @@
 // eslint-disable-next-line
 import React, { useState, useEffect } from 'react';
 import { jsx, css } from '@emotion/core';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
 
 import BoardColumn from './components/BoardColumn';
-import NewCardForm from './components/NewCardForm';
 import Dialog from './components/Dialog';
 
 import { COLUMNS_KEY_NAMES } from './configs';
@@ -17,8 +19,10 @@ export default function BoardContainer(props){
 
   const [showDialog, toggleDialog] = useState(false);
   const [dialogData, setDialogData] = useState({
+    action: 'delete',
     column: '',
-    cardInfo: ''
+    cardInfo: '',
+    handler: () => {},
   });
 
   // cdm
@@ -39,8 +43,21 @@ export default function BoardContainer(props){
     );
   };
 
+  const handleAddCard = (column, addHandler) => {
+    setDialogData({
+      action: 'add',
+      column,
+      addHandler,
+    });
+    toggleDialog(true);
+  }
+
   const handleCardDelete = ({ column, cardInfo }) => {
-    setDialogData({ column, cardInfo });
+    setDialogData({
+      action: 'delete',
+      column,
+      cardInfo
+    });
     toggleDialog(true);
   };
 
@@ -86,7 +103,19 @@ export default function BoardContainer(props){
         key={colInfo.title + index}
         {...colInfo}
       >
-        <NewCardForm  handleAdd={colInfo.handler} />
+        <div>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="small"
+            className='neka'
+            endIcon={<AddIcon />}
+            onClick={() => handleAddCard(colInfo.title, colInfo.handler)}
+          >
+            Add
+        </Button>
+
+        </div>
       </BoardColumn>
     )
   );
@@ -100,7 +129,12 @@ export default function BoardContainer(props){
       `}
     >
       <BoardColumns />
-      <Dialog {...{ showDialog, toggleDialog, dialogData, handleDeleteFromLocalStorage }} />
+      <Dialog {...{
+        showDialog,
+        toggleDialog,
+        dialogData,
+        handleDeleteFromLocalStorage
+      }} />
     </div>
   )
 }
