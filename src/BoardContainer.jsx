@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { jsx, css } from '@emotion/core';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 
 import BoardColumn from './components/BoardColumn';

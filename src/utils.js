@@ -28,3 +28,22 @@ export function saveInLocalStorage({ column, item }) {
 
   localStorage.setItem(column, JSON.stringify(collection)); // 💾
 }
+
+export function getContributorsList() {
+  const defaultContributors = [
+    {
+      email: 'a@j',
+      name: 'Ariel Jiménez',
+    },
+    {
+      email:'m@j',
+      name:'Mario "El Primo" Jiménez',
+    },
+    {
+      email: 'j@b',
+      name:'Jesus "El Chapi" Bibieca',
+    },
+  ];
+
+  return defaultContributors;
+}

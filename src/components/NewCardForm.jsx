@@ -8,11 +8,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Chip from '@material-ui/core/Chip';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import AddIcon from '@material-ui/icons/Add';
 import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import theme from '../css/theme';
+import { getContributorsList } from '../utils';
 
 export default function NewCardForm(props){
   const { addHandler } = props;
@@ -24,6 +27,7 @@ export default function NewCardForm(props){
       key: 1, label: 'neka'
     }
   ]);
+
   const [content, setContent] = useState({
     title: '',
     description: '',
@@ -32,9 +36,11 @@ export default function NewCardForm(props){
     dueDate: new Date(),
   });
 
-  const handleChange = (event) => {
-    // validate/sanitize
-    setContent(event.target.value);
+  const handleChange = (property) => (event) => {
+    setContent((content) => ({
+      ...content,
+      [property]: event.target.value,
+    }));
   }
 
   // reset the form
@@ -48,6 +54,7 @@ export default function NewCardForm(props){
       key: new Date().getTime(),
       label: currentTag,
     }]);
+
     setCurrentTag('');
   }
 
@@ -80,6 +87,30 @@ export default function NewCardForm(props){
         )
       )}
     </ul>
+  );
+
+  const AssigneeComponent = () => (
+    <FormControl className={'classes.formControl'}>
+      <InputLabel shrink id="assignee-select-label-label">
+        Assignee
+      </InputLabel>
+      <Select
+        displayEmpty
+        labelId="assignee-select-label-label"
+        id="assignee-select-label"
+        value={content.assignee}
+        onChange={handleChange('assignee')}
+        className={'classes.selectEmpty'}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+        {getContributorsList().map((contributor) => (
+          <MenuItem key={contributor.email} value={contributor.email}>{contributor.name}</MenuItem>
+        ))}
+      </Select>
+      <FormHelperText>Choose one</FormHelperText>
+    </FormControl>
   );
 
   return(
@@ -120,6 +151,7 @@ export default function NewCardForm(props){
         />
       </FormControl>
       <TagsComponent />
+      <AssigneeComponent />
       <DialogActions
         css={css`
           align-items: flex-end;
