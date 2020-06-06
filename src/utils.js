@@ -1,11 +1,19 @@
+/**
+ *
+ * @param {string} columnName - column name where belongs the card
+ * @param {Number} cardID - id of the card
+ * @returns undefined
+ */
+export function deleteFromLocalStore(columnName, cardID) {
+  let collection = JSON.parse(localStorage.getItem(columnName));
 
-export function deleteFromLocalStore (props) {
-  const { column, item } = props;
-  let collection = localStorage.getItem(column);
+  const success = delete collection[cardID]; // 🔪
 
-  delete collection[item.id]; // 🔪
+  if (success) {
+    localStorage.setItem(columnName, JSON.stringify(collection));
+  }
 
-  localStorage.setItem(column, collection);
+  return success;
 };
 
 export function saveInLocalStorage({ column, item }) {

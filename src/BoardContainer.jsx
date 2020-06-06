@@ -5,15 +5,21 @@ import { jsx, css } from '@emotion/core';
 
 import BoardColumn from './components/BoardColumn';
 import NewCardForm from './components/NewCardForm';
+import Dialog from './components/Dialog';
 
 import { COLUMNS_KEY_NAMES } from './configs';
-
 import { deleteFromLocalStore, saveInLocalStorage } from './utils';
 
 export default function BoardContainer(props){
-  const [todoItems, addTodo] = useState({ content: 'neka default', id: 1});
+  const [todoItems, addTodo] = useState({});
   const [inprogressItems, addInprogress] = useState({});
   const [doneItems, addDone] = useState({});
+
+  const [showDialog, toggleDialog] = useState(false);
+  const [dialogData, setDialogData] = useState({
+    column: '',
+    cardInfo: ''
+  });
 
   // cdm
   useEffect(() => {
@@ -33,39 +39,44 @@ export default function BoardContainer(props){
     );
   };
 
+  const handleCardDelete = ({ column, cardInfo }) => {
+    setDialogData({ column, cardInfo });
+    toggleDialog(true);
+  };
+
+  const handleDeleteFromLocalStorage = (column, cardId) => {
+    if ( deleteFromLocalStore(column, cardId)) {
+      // refresh the board
+      getFromLocalStore(column);
+    }
+
+    toggleDialog(false);
+  }
+
   const getFromLocalStore = (columnName = 'all') => {
-
-    console.log('== BoardContainer');
-    console.log({
-      neka: JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}')
-    });
-    console.log('BoardContainer == ');
-
     addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}'));
     addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS)  || '{}'));
     addDone(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '{}'));
   }
-
-
 
   const colNames = [
     {
       title: 'To Do',
       cards: todoItems,
       handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.TODO, item, addHandler: addTodo }),
-      handleDelete: (cardID) => deleteFromLocalStore({ column: COLUMNS_KEY_NAMES.TODO, cardID })
+      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.TODO, cardInfo })
     },
     {
       title: 'In Progress',
       cards: inprogressItems,
       handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.INPROGRESS, item, addHandler: addInprogress }),
-      handleDelete: (cardID) => deleteFromLocalStore({ column: COLUMNS_KEY_NAMES.INPROGRESS, cardID })
+      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.INPROGRESS, cardInfo })
     },
     {
       title: 'Done',
       cards: doneItems,
       handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.DONE, item, addHandler: addDone }),
-      handleDelete: (cardID) => deleteFromLocalStore({ column: COLUMNS_KEY_NAMES.DONE, cardID })
+      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.DONE, cardInfo })
     }
   ];
 
@@ -89,6 +100,7 @@ export default function BoardContainer(props){
       `}
     >
       <BoardColumns />
+      <Dialog {...{ showDialog, toggleDialog, dialogData, handleDeleteFromLocalStorage }} />
     </div>
   )
 }

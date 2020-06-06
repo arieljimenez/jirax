@@ -24,13 +24,6 @@ export default function BoardColumn(props){
     )
   )
 
-  console.log('== BoardColumn');
-  console.log({
-    cards
-  });
-  console.log('BoardColumn == ');
-
-
   return (
     <DndProvider
       backend={HTML5Backend}

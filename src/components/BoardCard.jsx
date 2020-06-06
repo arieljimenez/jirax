@@ -48,7 +48,7 @@ export default function SimpleCard(props) {
             variant='outlined'
             size="small"
             color="secondary"
-            onClick={() => handleDelete(cardInfo.id)}
+            onClick={() => handleDelete(cardInfo)}
           >
             Delete
           </Button>
