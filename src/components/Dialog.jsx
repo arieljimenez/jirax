@@ -46,7 +46,7 @@ export default function JiraxDialog(props) {
         </DialogActions>
       </>
     ),
-    add: () => <NewCardForm {...{ addHandler }} />,
+    add: () => <NewCardForm {...{ addHandler, toggleDialog }} />,
   };
 
   return (

@@ -12,85 +12,69 @@ import AddIcon from '@material-ui/icons/Add';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import FormHelperText from '@material-ui/core/FormHelperText';
 
 import theme from '../css/theme';
 import { getContributorsList } from '../utils';
 
+
+const initialCardValues = {
+  title: '',
+  description: '',
+  tags: [
+    {
+      key: 1, label: 'TODO'
+    }
+  ],
+  assignee: '',
+  dueDate: new Date().toISOString().substring(0, 16), // yyyy-mm-ddTHH:mm
+};
+
 export default function NewCardForm(props){
-  const { addHandler } = props;
+  const { addHandler, toggleDialog } = props;
 
   const [cardError, setCardError] = useState(false);
   const [currentTag, setCurrentTag] = useState('');
-  const [tagsData, setTagsData] = useState([
-    {
-      key: 1, label: 'neka'
-    }
-  ]);
-
-  const [content, setContent] = useState({
-    title: '',
-    description: '',
-    tags: [],
-    assignee: '',
-    dueDate: new Date(),
-  });
+  const [content, setContent] = useState({...initialCardValues});
 
   const handleChange = (property) => (event) => {
-    setContent((content) => ({
+    setContent({
       ...content,
       [property]: event.target.value,
-    }));
+    });
   }
 
   // reset the form
   const handleReset = () => {
-    setContent('');
+    setContent({...initialCardValues});
     setCardError(false);
   }
 
   const handleAddTag = () => {
-    setTagsData([...tagsData, {
-      key: new Date().getTime(),
-      label: currentTag,
-    }]);
+    setContent({
+      ...content,
+      tags: [
+        ...content.tags,
+        {
+          key: new Date().getTime(),
+          label: currentTag,
+        }
+      ]
+    });
 
     setCurrentTag('');
   }
 
   const handleTagsDelete = (tagToDelete) => {
-    setTagsData((tags) => tags.filter((tag) => tag !== tagToDelete));
+    const filteredTags = content.tags.filter((tag) => tag !== tagToDelete);
+
+    setContent({
+      ...content,
+      tags: filteredTags,
+    })
   };
 
-  const TagsComponent = () => (
-    <ul
-      css={css`
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          list-style: none;
-          margin: 0;
-          padding: 15px;
-      `}
-    >
-      {tagsData.map((tag) => (
-          <li key={tag.key}>
-            <Chip
-              size='small'
-              label={tag.label}
-              onDelete={() => handleTagsDelete(tag)}
-              css={css`
-                margin: 15px;
-              `}
-            />
-          </li>
-        )
-      )}
-    </ul>
-  );
-
-  const AssigneeComponent = () => (
-    <FormControl className={'classes.formControl'}>
+  const assigneeComponent = (
+    <FormControl>
       <InputLabel shrink id="assignee-select-label-label">
         Assignee
       </InputLabel>
@@ -100,7 +84,6 @@ export default function NewCardForm(props){
         id="assignee-select-label"
         value={content.assignee}
         onChange={handleChange('assignee')}
-        className={'classes.selectEmpty'}
       >
         <MenuItem value="">
           <em>None</em>
@@ -109,11 +92,56 @@ export default function NewCardForm(props){
           <MenuItem key={contributor.email} value={contributor.email}>{contributor.name}</MenuItem>
         ))}
       </Select>
-      <FormHelperText>Choose one</FormHelperText>
     </FormControl>
   );
 
-  return(
+  const dueDateComponent = (
+    <TextField
+      id="datetime-local"
+      className={'classes.textField'}
+      type="datetime-local"
+      label="Due Date"
+      value={content.dueDate}
+      onChange={handleChange('dueDate')}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  );
+
+  const dialogActions = (
+    <DialogActions
+      css={css`
+        align-items: flex-end;
+      `}
+    >
+      <Button
+        css={css`
+          margin: ${theme.margins.small};
+        `}
+        onClick={() => {
+
+          if (content.title) {
+            addHandler({
+              id: new Date().getTime(),
+              ...content,
+            });
+
+            toggleDialog(false);
+          }
+
+          setCardError(true);
+        }}
+      >
+        Add
+      </Button>
+      <Button onClick={handleReset}>
+        Reset
+      </Button>
+    </DialogActions>
+  );
+
+  return (
     <form
       noValidate
       autoComplete="off"
@@ -128,21 +156,19 @@ export default function NewCardForm(props){
         error={cardError}
         label="Title"
         value={content.title}
-        onChange={handleChange}
+        onChange={handleChange('title')}
         helperText={cardError && "Card cant be empty"}
       />
       <TextField
-        error={cardError}
         multiline
         rows={2}
         label="Description"
         variant="outlined"
         value={content.description}
-        onChange={handleChange}
-        helperText={cardError && "Card cant be empty"}
+        onChange={handleChange('description')}
       />
       <FormControl fullWidth>
-        <InputLabel htmlFor="outlined-adornment-password">Tags</InputLabel>
+        <InputLabel htmlFor="outlined-adornment">Tags</InputLabel>
         <Input
           label="Tags"
           value={currentTag}
@@ -150,29 +176,43 @@ export default function NewCardForm(props){
           endAdornment={<AddIcon onClick={handleAddTag} />}
         />
       </FormControl>
-      <TagsComponent />
-      <AssigneeComponent />
-      <DialogActions
-        css={css`
-          align-items: flex-end;
-        `}
-      >
-        <Button
-          css={css`
-            margin: ${theme.margins.small};
-          `}
-          onClick={() => addHandler({
-              id: new Date().getTime(),
-              content,
-            })
-          }
-        >
-          Add
-        </Button>
-        <Button onClick={handleReset}>
-          Reset
-        </Button>
-      </DialogActions>
+      <TagsComponent tags={content.tags} {...{handleTagsDelete}} />
+      {assigneeComponent}
+      {dueDateComponent}
+      {dialogActions}
     </form>
   )
 }
+
+export const TagsComponent = (props) => {
+  const {
+    tags,
+    handleTagsDelete,
+  } = props;
+
+  return (
+    <ul
+      css={css`
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      `}
+    >
+      {
+      tags.filter(tag => tag.key)
+      .map((tag) => (
+        <li key={tag.key}>
+          <Chip
+            size='small'
+            label={tag.label}
+            onDelete={handleTagsDelete ? () => handleTagsDelete(tag) : undefined}
+            color={tag.color ? tag.color : undefined}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+};

@@ -107,7 +107,6 @@ export default function BoardContainer(props){
             variant="outlined"
             color="primary"
             size="small"
-            className='neka'
             endIcon={<AddIcon />}
             onClick={() => handleAddCard(colInfo.title, colInfo.handler)}
           >
