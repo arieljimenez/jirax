@@ -14,7 +14,7 @@ import { getContributorsList } from '../utils';
 
 
 export default function SimpleCard(props) {
-  const { cardInfo, handleDelete } = props;
+  const { cardInfo, handleDelete, handleEdit } = props;
 
   const formattedDueDate = new Date(cardInfo.dueDate).toDateString();
   const [contributorInfo] = getContributorsList().filter(contributor => contributor.email === cardInfo.assignee);
@@ -61,9 +61,6 @@ export default function SimpleCard(props) {
             `}
           >
             {cardInfo.description}
-
-            {formattedDueDate}
-
           </Typography>
           <TagsComponent
             tags={[
@@ -78,6 +75,14 @@ export default function SimpleCard(props) {
             justify-content: flex-end;
           `}
         >
+          <Button
+            variant='outlined'
+            size="small"
+            color="primary"
+            onClick={() => handleEdit(cardInfo)}
+          >
+            Edit
+          </Button>
           <Button
             variant='outlined'
             size="small"

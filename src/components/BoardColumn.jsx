@@ -12,14 +12,12 @@ import BoardCard from './BoardCard';
 
 
 export default function BoardColumn(props){
-  const { title, cards, handleDelete } = props;
+  const { title, cards, handleDelete, handleEdit } = props;
 
   const columnCards = Object.entries(cards).map(
-    ([key, card]) => (
+    ([key, cardInfo]) => (
       <BoardCard
-        key={key}
-        cardInfo={card}
-        handleDelete={handleDelete}
+        {...{ key, cardInfo, handleDelete, handleEdit }}
       />
     )
   )

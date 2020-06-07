@@ -60,6 +60,17 @@ export default function BoardContainer(props){
     toggleDialog(true);
   };
 
+  const handleCardEdit = ({ column, cardInfo, addHandler }) => {
+    setDialogData({
+      action: 'edit',
+      column,
+      cardInfo,
+      addHandler,
+    });
+
+    toggleDialog(true);
+  }
+
   const handleDeleteFromLocalStorage = (column, cardId) => {
     if ( deleteFromLocalStore(column, cardId)) {
       // refresh the board
@@ -80,19 +91,22 @@ export default function BoardContainer(props){
       title: 'To Do',
       cards: todoItems,
       handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.TODO, item, addHandler: addTodo }),
-      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.TODO, cardInfo })
+      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.TODO, cardInfo }),
+      handleEdit: (cardInfo) => handleCardEdit({ column: COLUMNS_KEY_NAMES.TODO, cardInfo, addHandler: addTodo }),
     },
     {
       title: 'In Progress',
       cards: inprogressItems,
       handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.INPROGRESS, item, addHandler: addInprogress }),
-      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.INPROGRESS, cardInfo })
+      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.INPROGRESS, cardInfo }),
+      handleEdit: (cardInfo) => handleCardEdit({ column: COLUMNS_KEY_NAMES.INPROGRESS, cardInfo, addHandler: addInprogress  }),
     },
     {
       title: 'Done',
       cards: doneItems,
       handler: (item) => addToCollection({ column: COLUMNS_KEY_NAMES.DONE, item, addHandler: addDone }),
-      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.DONE, cardInfo })
+      handleDelete: (cardInfo) => handleCardDelete({ column: COLUMNS_KEY_NAMES.DONE, cardInfo }),
+      handleEdit: (cardInfo) => handleCardEdit({ column: COLUMNS_KEY_NAMES.DONE, cardInfo, addHandler: addDone }),
     }
   ];
 

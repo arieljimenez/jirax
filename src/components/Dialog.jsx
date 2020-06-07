@@ -23,7 +23,8 @@ export default function JiraxDialog(props) {
 
   const dialogTitlesByActions = {
     delete: 'Delete this Card?',
-    add: `Adding a card to ${column}`
+    add: `Adding a card to ${column}`,
+    edit: 'Editing Card',
   };
 
   const dialogContent = {
@@ -47,6 +48,7 @@ export default function JiraxDialog(props) {
       </>
     ),
     add: () => <NewCardForm {...{ addHandler, toggleDialog }} />,
+    edit: () => <NewCardForm edit {...{ addHandler, toggleDialog, cardInfo }} />,
   };
 
   return (

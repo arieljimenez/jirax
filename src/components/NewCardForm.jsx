@@ -1,6 +1,6 @@
 /** @jsx jsx */
 // eslint-disable-next-line
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { jsx, css } from '@emotion/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -30,11 +30,15 @@ const initialCardValues = {
 };
 
 export default function NewCardForm(props){
-  const { addHandler, toggleDialog } = props;
+  const { addHandler, toggleDialog, cardInfo, edit } = props;
 
   const [cardError, setCardError] = useState(false);
   const [currentTag, setCurrentTag] = useState('');
-  const [content, setContent] = useState({...initialCardValues});
+  const [content, setContent] = useState(
+    edit
+      ? { ...cardInfo}
+      : {...initialCardValues}
+  );
 
   const handleChange = (property) => (event) => {
     setContent({
@@ -120,12 +124,21 @@ export default function NewCardForm(props){
           margin: ${theme.margins.small};
         `}
         onClick={() => {
-
           if (content.title) {
-            addHandler({
-              id: new Date().getTime(),
-              ...content,
-            });
+            // when editing the add handler is different
+            if (edit) {
+              addHandler(collection => ({
+                ...collection,
+                [content.id]: {
+                  ...content,
+                }
+              }));
+            } else {
+              addHandler({
+                id: new Date().getTime(),
+                ...content,
+              });
+            }
 
             toggleDialog(false);
           }
@@ -133,7 +146,7 @@ export default function NewCardForm(props){
           setCardError(true);
         }}
       >
-        Add
+        { edit ? 'Edit' : 'Add'}
       </Button>
       <Button onClick={handleReset}>
         Reset
@@ -186,7 +199,7 @@ export default function NewCardForm(props){
 
 export const TagsComponent = (props) => {
   const {
-    tags,
+    tags=[],
     handleTagsDelete,
   } = props;
 
