@@ -7,7 +7,7 @@
 export function deleteFromLocalStore(columnName, cardID) {
   let collection = JSON.parse(localStorage.getItem(columnName));
 
-  collection = collection.filter(card => card.id === cardID)
+  collection = collection.filter(card => card.id !== cardID)
 
   // const success = delete collection[cardID]; // 🔪
 

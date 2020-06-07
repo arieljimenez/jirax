@@ -1,36 +1,51 @@
 /** @jsx jsx */
 // eslint-disable-next-line
 import React from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { jsx, css } from '@emotion/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { DropTarget, useDrop } from 'react-dnd';
 
 import BoardCard from './BoardCard';
 
 
-export default function BoardColumn(props){
-  const { title, cards, handleDelete, handleEdit } = props;
+function BoardColumn(props){
+  const {
+    title,
+    cards,
+    handleDelete,
+    handleEdit,
+    handleMove,
+    canDrop,
+    isOver,
+    connectDropTarget,
+    keyColumnName,
+  } = props;
+
+  const isActive = canDrop && isOver;
 
   const columnCards = cards.map(
     (cardInfo) => (
       <BoardCard
         key={cardInfo.id}
-        {...{ cardInfo, handleDelete, handleEdit }}
+        {...{
+          cardInfo,
+          handleDelete,
+          handleEdit,
+          handleMove,
+          keyColumnName,
+          isActive,
+        }}
       />
     )
-  )
+  );
 
-  return (
-    <DndProvider
-      backend={HTML5Backend}
-    >
+  return connectDropTarget (
+    <div>
       <Card
         css={css`
-          text-align: center;
-          width: 100%;
+          height: 100%;
         `}
       >
         <CardContent>
@@ -40,7 +55,7 @@ export default function BoardColumn(props){
             css={css`
               font-size: 1.5em;
             `}
-           >
+            >
             {title}
             <hr />
           </Typography>
@@ -48,6 +63,22 @@ export default function BoardColumn(props){
           {props.children}
         </CardContent>
       </Card>
-    </DndProvider>
+    </div>
   )
 };
+
+export default DropTarget (
+  'CARD',
+  {
+    drop: ({ keyColumnName }) => ({
+      name: `${keyColumnName} Column`,
+      allowedDropEffect: 'move',
+      keyColumnName,
+    }),
+  },
+  (connect, monitor) => ({
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
+  }),
+)(BoardColumn);
