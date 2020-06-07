@@ -28,7 +28,7 @@ function SimpleCard(props) {
 
   const formattedDueDate = new Date(cardInfo.dueDate).toDateString();
   const [contributorInfo] = getContributorsList()
-    .filter(contributor => contributor.email === cardInfo.assignee);
+    .filter(contributor => contributor.name === cardInfo.assignee);
 
   return connectDragSource (
     <div>

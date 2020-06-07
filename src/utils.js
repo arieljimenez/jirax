@@ -1,3 +1,5 @@
+import { COLUMNS_KEY_NAMES } from './configs';
+
 /**
  *
  * @param {string} columnName - column name where belongs the card
@@ -28,7 +30,7 @@ export function saveInLocalStorage({ column, item }) {
   ];
 
   localStorage.setItem(column, JSON.stringify(collection)); // 💾
-}
+};
 
 export function getContributorsList() {
   const defaultContributors = [
@@ -47,4 +49,16 @@ export function getContributorsList() {
   ];
 
   return defaultContributors;
-}
+};
+
+export const getAllCollectionsFromLocalStore = () => {
+  const todoItems = JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '[]');
+  const inprogressItems = JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS) || '[]');
+  const doneItems = JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '[]');
+
+  return {
+    todoItems,
+    inprogressItems,
+    doneItems
+  }
+};

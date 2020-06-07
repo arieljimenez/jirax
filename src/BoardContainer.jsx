@@ -11,12 +11,17 @@ import BoardColumn from './components/BoardColumn';
 import Dialog from './components/Dialog';
 
 import { COLUMNS_KEY_NAMES } from './configs';
-import { deleteFromLocalStore, saveInLocalStorage } from './utils';
+import { deleteFromLocalStore, saveInLocalStorage, getAllCollectionsFromLocalStore } from './utils';
 
 export default function BoardContainer(props){
-  const [todoItems, addTodo] = useState([]);
-  const [inprogressItems, addInprogress] = useState([]);
-  const [doneItems, addDone] = useState([]);
+  let {
+    todoItems,
+    addTodo,
+    inprogressItems,
+    addInprogress,
+    doneItems,
+    addDone,
+  } = props;
 
   const [showDialog, toggleDialog] = useState(false);
   const [dialogData, setDialogData] = useState({
@@ -28,7 +33,7 @@ export default function BoardContainer(props){
 
   // cdm
   useEffect(() => {
-    getFromLocalStore();
+    setFromLocalStore();
   }, []);
 
   const addToCollection = (props) => {
@@ -69,23 +74,29 @@ export default function BoardContainer(props){
   const handleDeleteFromLocalStorage = (column, cardId) => {
     if ( deleteFromLocalStore(column, cardId)) {
       // refresh the board
-      getFromLocalStore(column);
+      setFromLocalStore(column);
     }
 
     toggleDialog(false);
   }
 
-  const getFromLocalStore = (columnName = 'all') => {
-    addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '[]'));
-    addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS)  || '[]'));
-    addDone(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '[]'));
+  const setFromLocalStore = () => {
+    const {
+      todoItems,
+      inprogressItems,
+      doneItems
+    } = getAllCollectionsFromLocalStore();
+
+    addTodo(todoItems);
+    addInprogress(inprogressItems);
+    addDone(doneItems);
   }
 
   const handleMoveCard = ({ from, to, cardInfo, addHandler}) => {
     handleDeleteFromLocalStorage(from, cardInfo.id);
 
     addToCollection({ column: to, item: cardInfo, addHandler})
-    getFromLocalStore(to);
+    setFromLocalStore();
   }
 
   const colNames = [

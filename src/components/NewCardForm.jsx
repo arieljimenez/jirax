@@ -93,7 +93,7 @@ export default function NewCardForm(props){
           <em>None</em>
         </MenuItem>
         {getContributorsList().map((contributor) => (
-          <MenuItem key={contributor.email} value={contributor.email}>{contributor.name}</MenuItem>
+          <MenuItem key={contributor.name} value={contributor.name}>{contributor.name}</MenuItem>
         ))}
       </Select>
     </FormControl>
