@@ -12,9 +12,9 @@ import { COLUMNS_KEY_NAMES } from './configs';
 import { deleteFromLocalStore, saveInLocalStorage } from './utils';
 
 export default function BoardContainer(props){
-  const [todoItems, addTodo] = useState({});
-  const [inprogressItems, addInprogress] = useState({});
-  const [doneItems, addDone] = useState({});
+  const [todoItems, addTodo] = useState([]);
+  const [inprogressItems, addInprogress] = useState([]);
+  const [doneItems, addDone] = useState([]);
 
   const [showDialog, toggleDialog] = useState(false);
   const [dialogData, setDialogData] = useState({
@@ -32,14 +32,7 @@ export default function BoardContainer(props){
   const addToCollection = (props) => {
     saveInLocalStorage(props);
 
-    props.addHandler(
-      items => ({
-        ...items,
-        [props.item.id]: {
-          ...props.item
-        }
-      })
-    );
+    props.addHandler(items => ([...items, props.item ]));
   };
 
   const handleAddCard = (column, addHandler) => {
@@ -81,9 +74,9 @@ export default function BoardContainer(props){
   }
 
   const getFromLocalStore = (columnName = 'all') => {
-    addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '{}'));
-    addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS)  || '{}'));
-    addDone(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '{}'));
+    addTodo(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.TODO) || '[]'));
+    addInprogress(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.INPROGRESS)  || '[]'));
+    addDone(JSON.parse(localStorage.getItem(COLUMNS_KEY_NAMES.DONE) || '[]'));
   }
 
   const colNames = [

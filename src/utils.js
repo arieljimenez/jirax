@@ -7,24 +7,25 @@
 export function deleteFromLocalStore(columnName, cardID) {
   let collection = JSON.parse(localStorage.getItem(columnName));
 
-  const success = delete collection[cardID]; // 🔪
+  collection = collection.filter(card => card.id === cardID)
 
-  if (success) {
-    localStorage.setItem(columnName, JSON.stringify(collection));
-  }
+  // const success = delete collection[cardID]; // 🔪
 
-  return success;
+  localStorage.setItem(columnName, JSON.stringify(collection));
+
+  return true;
 };
 
 export function saveInLocalStorage({ column, item }) {
-  let collection = JSON.parse(localStorage.getItem(column) || '{}');
+  let collection = JSON.parse(localStorage.getItem(column) || '[]');
 
-  collection = {
+  // filter old item
+  collection = collection.filter(card => card.id !== item.id);
+
+  collection = [
     ...collection,
-    [item.id]: {
-      ...item
-    }
-  };
+    item,
+  ];
 
   localStorage.setItem(column, JSON.stringify(collection)); // 💾
 }

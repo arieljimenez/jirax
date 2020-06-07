@@ -14,7 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 import theme from '../css/theme';
-import { getContributorsList } from '../utils';
+import { getContributorsList, saveInLocalStorage } from '../utils';
 
 
 const initialCardValues = {
@@ -30,7 +30,7 @@ const initialCardValues = {
 };
 
 export default function NewCardForm(props){
-  const { addHandler, toggleDialog, cardInfo, edit } = props;
+  const { addHandler, toggleDialog, cardInfo, edit, column } = props;
 
   const [cardError, setCardError] = useState(false);
   const [currentTag, setCurrentTag] = useState('');
@@ -127,12 +127,13 @@ export default function NewCardForm(props){
           if (content.title) {
             // when editing the add handler is different
             if (edit) {
-              addHandler(collection => ({
-                ...collection,
-                [content.id]: {
-                  ...content,
-                }
-              }));
+              addHandler(collection => {
+                const updatedCollection =  collection.map(card => card.id === content.id ? content : card);
+
+                saveInLocalStorage({ column, item: content });
+
+                return updatedCollection;
+              });
             } else {
               addHandler({
                 id: new Date().getTime(),
