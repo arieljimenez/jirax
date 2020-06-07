@@ -5,7 +5,8 @@ import { jsx, css } from '@emotion/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { DropTarget, useDrop } from 'react-dnd';
+import { DropTarget } from 'react-dnd';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import BoardCard from './BoardCard';
 
@@ -21,6 +22,7 @@ function BoardColumn(props){
     isOver,
     connectDropTarget,
     keyColumnName,
+    isDataLoaded,
   } = props;
 
   const isActive = canDrop && isOver;
@@ -43,23 +45,20 @@ function BoardColumn(props){
 
   return connectDropTarget (
     <div>
-      <Card
-        css={css`
-          height: 100%;
-        `}
-      >
+      <Card css={css` height: 100%; `}>
         <CardContent>
           <Typography
             variant="h5"
             component="h2"
-            css={css`
-              font-size: 1.5em;
-            `}
-            >
+            css={css` font-size: 1.5em;`}
+          >
             {title}
             <hr />
           </Typography>
-          {columnCards}
+          {isDataLoaded
+            ? columnCards
+            : <Skeleton variant='rect' height="2000px" />
+          }
           {props.children}
         </CardContent>
       </Card>

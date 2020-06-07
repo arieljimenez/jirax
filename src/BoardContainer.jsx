@@ -23,6 +23,7 @@ export default function BoardContainer(props){
     addDone,
   } = props;
 
+  const [isDataLoaded, setDataLoaded] = useState(false);
   const [showDialog, toggleDialog] = useState(false);
   const [dialogData, setDialogData] = useState({
     action: 'delete',
@@ -33,7 +34,14 @@ export default function BoardContainer(props){
 
   // cdm
   useEffect(() => {
-    setFromLocalStore();
+    async function fetchData() {
+      await setTimeout(() => {
+        setFromLocalStore();
+        setDataLoaded(true);
+      }, 5000);
+    };
+
+    fetchData();
   }, []);
 
   const addToCollection = (props) => {
@@ -142,8 +150,9 @@ export default function BoardContainer(props){
         `}
       >
         <BoardColumn
-          key={colInfo.title + index}
           {...colInfo}
+          key={colInfo.title + index}
+          isDataLoaded={isDataLoaded}
         >
           <Button
             variant="outlined"

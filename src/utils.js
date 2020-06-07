@@ -59,6 +59,6 @@ export const getAllCollectionsFromLocalStore = () => {
   return {
     todoItems,
     inprogressItems,
-    doneItems
+    doneItems,
   }
 };

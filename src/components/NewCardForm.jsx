@@ -20,11 +20,7 @@ import { getContributorsList, saveInLocalStorage } from '../utils';
 const initialCardValues = {
   title: '',
   description: '',
-  tags: [
-    {
-      key: 1, label: 'TODO'
-    }
-  ],
+  tags: [],
   assignee: '',
   dueDate: new Date().toISOString().substring(0, 16), // yyyy-mm-ddTHH:mm
 };
