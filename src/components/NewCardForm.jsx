@@ -202,7 +202,8 @@ export const TagsComponent = (props) => {
       `}
     >
       {
-      tags.filter(tag => tag.key)
+      tags
+      .filter(tag => tag.key)
       .map((tag) => (
         <li key={tag.key}>
           <Chip
