@@ -78,7 +78,7 @@ function SimpleCard(props) {
             <TagsComponent
               tags={[
                 ...cardInfo.tags,
-                (contributorInfo ? {key: 'assignee', label: contributorInfo.name} : ''),
+                (contributorInfo ? { key: 'assignee', label: contributorInfo.name, color: 'primary'} : ''),
                 { key: 'dueDate', label: formattedDueDate, color: 'secondary'},
               ]}
             />
